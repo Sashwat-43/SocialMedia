@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const UserSchema = new mongoose.Schema({
     username:{
         type:String,
-        require:true,
+        required:true,
         min: 5,
         max: 10,
         unique:true
@@ -39,6 +39,20 @@ const UserSchema = new mongoose.Schema({
     coverPic:{
         type:String,
         default:""
+    },
+    bio:{
+        type:String,
+        default:"",
+        max:60
+    },
+    city:{
+        type:String,
+        default:"",
+        max:60
+    },
+    relationship:{
+        type:Number,
+        enum:[1,2,3]
     }
 },
 {timestamps:true}
