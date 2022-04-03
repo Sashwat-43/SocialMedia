@@ -6,16 +6,21 @@ router.get("/",(req,res)=>{
     res.send("Auth home");
 })
 
+// Register user
 
-router.get("/register",async(req,res)=>{
-    const user = await new User({
-        username:"Sashwat",
-        email:"sashwat@gmail.com",
-        password:"Password",
-    })
+router.post("/register",async(req,res)=>{
+    const tempUser = new User({
+        username: req.body.username,
+        email: req.body.email,
+        password: req.body.password
+    });
 
-    await user.save();
-    res.send("User added");
+    try{
+        const user = await tempUser.save();
+        res.status(200).json(user);
+    }catch(err){
+        console.log(err);
+    }
 })
 
 
