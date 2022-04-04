@@ -71,7 +71,22 @@ router.delete("/:id",async(req,res)=>{
 
 // reading/getting a particular user
 
+router.get("/:id",async(req,res)=>{
+
+    try{
+
+        const tempUser = await User.findById(req.params.id);
+        const {username,email,_id} = tempUser._doc
+        res.status(200).json({username,email,_id});
+
+    }catch(err){
+        return res.status(400).json(err);
+    }
+
+})
+
 // following a user
+
 
 // unfollowing a user
 
