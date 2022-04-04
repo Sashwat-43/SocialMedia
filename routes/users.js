@@ -99,8 +99,7 @@ router.put("/:id/follow",async(req,res)=>{
     // if yes then we simply restrict this action and prompt that you cannot follow yourself
     // else we simply find the user with params.id and insert this id in following array of user with id userId
     // and also insert user with userId in followers array of user with params.id
-    // console.log(req.params.id);
-    // console.log(req.body.userId);
+
     if(req.params.id!=req.body.userId){
 
         try{
@@ -133,12 +132,51 @@ router.put("/:id/follow",async(req,res)=>{
     }else{
 
         return res.status(401).json("You cannot follow yourself!");
-        
+
     }
 
 })
 
 // unfollowing a user
+
+router.put("/:id/unfollow",async(req,res)=>{
+
+    // checking if the user is trying to unfollow him/her self
+    // if yes then we simply restrict this action and prompt that you cannot unfollow yourself
+    // else we check whether he is even following the user or not
+    // if no then we simply restrict this action and prompt that you have not followed this user , so cannot unfollow
+    // if he was following the user, then we remove the users from followers and followings array of corresponding users
+
+    if(req.params.id!=req.body.userId){
+
+        try{
+
+            const followedUser = await User.findById(req.params.id);
+            const followingUser = await User.findById(req.body.userId);
+
+            if(followedUser.followers.includes(req.body.userId)){
+
+                await followedUser.updateOne({$pull:{followers:req.body.userId}});
+                await followingUser.updateOne({$pull:{followings:req.params.id}});;
+                res.status(200).json("You have unfollowed this user!");
+
+            }else{
+
+                return res.status(401).json("You are not following this user!");                
+
+            }
+
+        }catch(err){
+            res.status(400).json(err);
+        }
+
+    }else{
+
+        return res.status(401).json("You cannot unfollow yourself!");
+
+    }
+
+})
 
 
 module.exports = router;
