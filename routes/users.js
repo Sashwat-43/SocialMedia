@@ -5,6 +5,10 @@ const User = require('../models/User');
 
 // Cred operations ->
 
+router.get("/",(req,res)=>{
+    res.send("Users home");
+})
+
 // updating the user's info
 
 router.put("/:id",async(req,res)=>{

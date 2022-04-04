@@ -1,10 +1,10 @@
 const router = require("express").Router();
 const bcrypt = require("bcrypt");
+const { contentSecurityPolicy } = require("helmet");
 const User = require("../models/User");
 
 
 router.get("/",(req,res)=>{
-    console.log("Auth home");
     res.send("Auth home");
 })
 
@@ -28,8 +28,8 @@ router.post("/register",async(req,res)=>{
     }
 
     // encrypting password
-
-    const salt = await bcrypt.genSalt(10);
+    const saltRounds = 10;
+    const salt = await bcrypt.genSalt(saltRounds);
     const encryptedPassword = await bcrypt.hash(req.body.password, salt);
 
     // storing the encrypted password in the userschema
@@ -53,22 +53,23 @@ router.post("/register",async(req,res)=>{
 // login user
 
 router.post("/login",async(req,res)=>{
-    
+    console.log("yo");
     const user = await User.findOne({email:req.body.email});
+    console.log("yi");
+    console.log(user);
     try{
         if(!user){
             res.status(404).json("No such user exists");
         }else{
             const isCorrectPassword = await bcrypt.compare(req.body.password,user.password);
-            console.log(isCorrectPassword);
+            // console.log(isCorrectPassword);
             if(!isCorrectPassword){
                 res.status(400).json("Incorrect Password");
             }else{
                 res.status(200).json(user);
             }
         }
-    }
-    catch(err){
+    }catch(err){
         res.status(500).json(err);
     }
 
