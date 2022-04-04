@@ -13,10 +13,11 @@ router.put("/:id",async(req,res)=>{
     if(req.params.id==req.body.userId||req.body.isAdmin){
 
         if(req.body.password){
+            console.log(req.body.password);
             try{
                 const salt = await bcrypt.genSalt(10);
                 req.body.password = await bcrypt.hash(req.body.password,salt);
-                return res.status(200).json("User has been updated successfully!");
+                res.status(200).json("User has been updated successfully!");
             }catch(err){
                 return res.status(404).json(err);
             }

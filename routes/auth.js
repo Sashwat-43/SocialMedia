@@ -60,6 +60,7 @@ router.post("/login",async(req,res)=>{
             res.status(404).json("No such user exists");
         }else{
             const isCorrectPassword = await bcrypt.compare(req.body.password,user.password);
+            console.log(isCorrectPassword);
             if(!isCorrectPassword){
                 res.status(400).json("Incorrect Password");
             }else{
