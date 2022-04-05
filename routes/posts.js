@@ -46,6 +46,17 @@ router.put("/:id",async(req,res)=>{
 
 // getting a post
 
+router.get(":/id",async(req,res)=>{
+    try{
+        const tempPost = await Post.findById(req.params.id);
+        console.log(tempPost);
+        const {userId,_id,bio,likes,...others} = tempPost;
+        res.status(200).json({userId,_id,bio,likes});
+    }catch(err){    
+        res.status(404).json(err);
+    }
+})
+
 // deleting a post
 
 // liking a post
