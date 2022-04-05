@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const Post = require("../models/Post");
+const User = require("../models/User");
 
 
 // creating a post
@@ -9,7 +10,7 @@ router.post("/",async(req,res)=>{
     const tempPost = new Post(req.body);
 
     try{
-        console.log(tempPost);
+        // console.log(tempPost);
         const post = await tempPost.save();
         res.status(200).json(tempPost);
 
@@ -145,7 +146,32 @@ router.put("/:id/unlike",async(req,res)=>{
     }
 })
 
-// getting all posts of user's followings
+// getting all posts of user and user's followings 
 
+// we find all posts of user by simply using Post.find and search for all posts which have same userId as that of req.body.userId
+// we go to followings array of user with body.userId and then for each user in followings array we find the post they created with help of get api of post
+
+router.get("/allposts/all",async(req,res)=>{
+    try{
+        const tempUser = await User.findById(req.body.userId);
+        if(!tempUser){
+            return res.status(404).json("No such user exists!");
+        }
+        const userPosts = await Post.find({userId:req.body.userId});
+        const followersPosts = await Promise.all(
+            tempUser.followings.map((follower) =>{
+                // console.log(follower);
+                // console.log(Post.find({userId:follower}));
+                return Post.find({userId: follower});
+            })
+        )
+        // console.log(followersPosts);
+        const allPosts =  userPosts.concat(...followersPosts);
+            // console.log(allPosts);
+        res.status(200).json(allPosts);
+    }catch(err){
+        res.status(404).json(err);
+    }
+})
 
 module.exports = router; 

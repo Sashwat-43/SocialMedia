@@ -13,8 +13,6 @@ router.get("/",(req,res)=>{
 
 router.put("/:id",async(req,res)=>{
 
-    console.log(req.params.id);
-    console.log(req.body.userId);
     
     // if user id matches with id passed in url or the user is admin itself
 
@@ -38,6 +36,10 @@ router.put("/:id",async(req,res)=>{
         // we'll store it normally without any encryption
 
         try{
+            const checkUser = await User.findById(req.body.userId);
+            if(!checkUser){
+                return res.status(404).json("No such user exists!");
+            }
             const updatedUser = await User.findByIdAndUpdate(req.body.userId,{
                 $set:req.body,
             });
@@ -64,6 +66,10 @@ router.delete("/:id",async(req,res)=>{
     if(req.body.userId==req.params.id||req.body.isAdmin){
 
         try{
+            const checkUser = await User.findById(req.body.userId);
+            if(!checkUser){
+                return res.status(404).json("No such user exists!");
+            }
             const deletedUser = await User.findByIdAndDelete(req.params.id);
             res.status(200).json("User has been deleted!");
         }catch(err){
@@ -86,6 +92,9 @@ router.get("/:id",async(req,res)=>{
         // all other details are abstracted as they provide no significant use to the user
 
         const tempUser = await User.findById(req.params.id);
+        if(!tempUser){
+            return res.status(404).json("No such user exists!");
+        }
         const {username,email,_id} = tempUser._doc
         res.status(200).json({username,email,_id});
 
@@ -111,6 +120,9 @@ router.put("/:id/follow",async(req,res)=>{
             const followedUser = await User.findById(req.params.id);
             const followingUser = await User.findById(req.body.userId);
             
+            if(!followedUser||!followingUser){
+                return res.status(404).json("No such user exists!");
+            }
             // checking if followingUser is already following the followedUser
             // if yes then he/she will be present in the followers array of followedUser
             // else he/she is a new follower of followedUser 
@@ -157,7 +169,9 @@ router.put("/:id/unfollow",async(req,res)=>{
 
             const followedUser = await User.findById(req.params.id);
             const followingUser = await User.findById(req.body.userId);
-
+            if(!followedUser||!followingUser){
+                return res.status(404).json("No such user exists!");
+            }
             if(followedUser.followers.includes(req.body.userId)){
 
                 await followedUser.updateOne({$pull:{followers:req.body.userId}});
