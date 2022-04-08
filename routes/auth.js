@@ -53,16 +53,12 @@ router.post("/register",async(req,res)=>{
 // login user
 
 router.post("/login",async(req,res)=>{
-    console.log("yo");
     const user = await User.findOne({email:req.body.email});
-    console.log("yi");
-    console.log(user);
     try{
         if(!user){
             res.status(404).json("No such user exists");
         }else{
             const isCorrectPassword = await bcrypt.compare(req.body.password,user.password);
-            // console.log(isCorrectPassword);
             if(!isCorrectPassword){
                 res.status(400).json("Incorrect Password");
             }else{

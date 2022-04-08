@@ -11,10 +11,6 @@ const postRoute = require("./routes/posts");
 
 dotenv.config();
 
-// console.log(process.env.MONGO_URL2);
-
-// const y= process.env.x;
-// console.log(y);
 
 app.use(helmet());
 app.use(express.json());
@@ -26,7 +22,7 @@ app.use("/api/auth", authRoute);
 app.use("/api/posts",postRoute);
 
 mongoose.connect(
-    process.env.MONGO_URL2,
+    process.env.MONGO_URL,
     { useNewUrlParser: true, useUnifiedTopology: true },
     () => {
       console.log('Connected to MongoDB');

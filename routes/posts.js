@@ -10,7 +10,6 @@ router.post("/",async(req,res)=>{
     const tempPost = new Post(req.body);
 
     try{
-        // console.log(tempPost);
         const post = await tempPost.save();
         res.status(200).json(tempPost);
 
@@ -160,14 +159,10 @@ router.get("/allposts/all",async(req,res)=>{
         const userPosts = await Post.find({userId:req.body.userId});
         const followersPosts = await Promise.all(
             tempUser.followings.map((follower) =>{
-                // console.log(follower);
-                // console.log(Post.find({userId:follower}));
                 return Post.find({userId: follower});
             })
         )
-        // console.log(followersPosts);
         const allPosts =  userPosts.concat(...followersPosts);
-            // console.log(allPosts);
         res.status(200).json(allPosts);
     }catch(err){
         res.status(404).json(err);

@@ -22,7 +22,6 @@ router.put("/:id",async(req,res)=>{
         // store the encrypted password in my db
 
         if(req.body.password){
-            // console.log(req.body.password);
             try{
                 const saltRounds = 10;
                 const salt = await bcrypt.genSalt(saltRounds);
